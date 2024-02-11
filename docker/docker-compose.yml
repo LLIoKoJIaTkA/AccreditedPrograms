@@ -6,7 +6,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./../www/AccreditedPrograms:/var/www/
+      - ./../www/public:/var/www/html/public
       - ./nginx/conf.d:/etc/nginx/conf.d
     container_name: nginx_con
     depends_on:
@@ -17,16 +17,18 @@ services:
       context: .
       dockerfile: app/Dockerfile
     volumes:
-      - ./../www/AccreditedPrograms:/var/www
+      - ./../www:/var/www/html
+      - ./app/php.ini:/usr/local/etc/php/php.ini
+      - ./log/php:/var/log/php
     depends_on:
       - mysql
     container_name: app_con
 
   mysql:
-    image: mysql:latest
+    image: mysql:8.0
     restart: always
     volumes:
-      - ./tmp/mysql:/var/lib/mysql
+      - ./database/mysql:/var/lib/mysql
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
